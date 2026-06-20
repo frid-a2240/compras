@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Compras ISP</title>
+    <link rel="icon" type="image/png" href="/static/isp.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { brand: {
+            50:'#eff6ff',100:'#dbeafe',500:'#3b82f6',600:'#2563eb',
+            700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a'
+        }}, fontFamily: { sans: ['Montserrat','system-ui','sans-serif'] } } } }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans antialiased bg-slate-100 min-h-screen">
+    <div class="min-h-screen flex">
+
+        <div class="hidden lg:flex lg:w-1/2 relative bg-brand-900 overflow-hidden">
+            <img src="/static/compras2.jpg" alt=""
+                 class="absolute inset-0 w-full h-full object-cover"
+                 onerror="this.style.display='none'">
+            <div class="relative z-10 flex flex-col justify-between p-12 text-white w-full">
+                <div class="flex items-center gap-3"></div>
+                <div class="max-w-md"></div>
+                <div class="text-xs text-white/60">© 2026 ISP · Sistema de Compras</div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex items-center justify-start p-12 lg:p-24 bg-white">
+            <div class="w-full max-w-xl">
+
+                <div class="lg:hidden flex items-center justify-center mb-6">
+                    <img src="/static/isp.jpg" class="w-14 h-14 object-contain" alt="ISP">
+                </div>
+
+                <div id="step-login">
+                    <div class="mb-10 border-b pb-6 text-center">
+                        <img src="/static/isp.jpg" class="w-16 mb-3 mx-auto">
+                        <div class="text-sm font-bold text-[#2D3D52]">Infraestructura y Servicios Portuarios</div>
+                        <div class="text-3xl font-semibold text-[#1f8c95] whitespace-nowrap">Sistema de Compras</div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-[#2D3D52] mb-2">Iniciar sesión</h2>
+                        <p class="text-sm text-gray-500">Ingresa tus credenciales para acceder al sistema</p>
+                    </div>
+
+                    <div class="space-y-5">
+                        <div>
+                            <label class="text-sm font-semibold text-gray-700">Número de empleado</label>
+                            <input id="inp-user" type="text" placeholder="Ej. 203773" autocomplete="off"
+                                oninput="clearMsgs()"
+                                class="w-full mt-2 px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1f8c95]/20 focus:border-[#1f8c95]">
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-gray-700">Contraseña</label>
+                            <div class="relative mt-2">
+                                <input id="inp-pass" type="password" placeholder="Tu contraseña"
+                                    oninput="clearMsgs()"
+                                    class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1f8c95]/20 focus:border-[#1f8c95]">
+                                <button type="button" onclick="togglePw('inp-pass','ojo-1')"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <iconify-icon id="ojo-1" icon="mdi:eye-outline"></iconify-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="login-err" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2">
+                            <iconify-icon icon="mdi:alert-circle-outline"></iconify-icon>
+                            <span id="login-err-text"></span>
+                        </div>
+
+                        <div id="login-ok" class="hidden text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg p-3 flex items-center gap-2">
+                            <iconify-icon icon="mdi:check-circle-outline"></iconify-icon>
+                            <span id="login-ok-text"></span>
+                        </div>
+
+                        <button id="btn-login" onclick="doLogin()"
+                            class="w-full py-3 bg-[#2D3D52] hover:bg-[#253040] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition flex items-center justify-center gap-2">
+                            <span id="btn-label">Ingresar</span>
+                            <iconify-icon id="btn-loader" icon="mdi:loading" class="hidden animate-spin"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePw(inputId, ojoId) {
+            const inp = document.getElementById(inputId);
+            const ojo = document.getElementById(ojoId);
+            const show = inp.type === "password";
+            inp.type = show ? "text" : "password";
+            ojo.setAttribute("icon", show ? "mdi:eye-off-outline" : "mdi:eye-outline");
+        }
+
+        function clearMsgs() {
+            document.getElementById('login-err').classList.add('hidden');
+            document.getElementById('login-ok').classList.add('hidden');
+        }
+
+        function mostrarErr(msg) {
+            document.getElementById('login-err-text').textContent = msg;
+            document.getElementById('login-err').classList.remove('hidden');
+        }
+
+        function mostrarOk(msg) {
+            document.getElementById('login-ok-text').textContent = msg;
+            document.getElementById('login-ok').classList.remove('hidden');
+        }
+
+        async function doLogin() {
+            const user = document.getElementById("inp-user").value.trim();
+            const pass = document.getElementById("inp-pass").value;
+            const btn = document.getElementById('btn-login');
+            const lbl = document.getElementById('btn-label');
+            const ldr = document.getElementById('btn-loader');
+
+            clearMsgs();
+            if (!user || !pass) {
+                mostrarErr("Ingresa tu número de empleado y contraseña");
+                return;
+            }
+
+            btn.disabled = true;
+            lbl.textContent = "Validando...";
+            ldr.classList.remove('hidden');
+
+            try {
+                const res = await fetch('/auth', {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ user, pass }),
+                });
+                const data = await res.json();
+
+                if (data.ok) {
+                    mostrarOk("¡Bienvenida, " + data.name + "! Redirigiendo...");
+                    setTimeout(() => window.location.href = "/", 1000);
+                    return;
+                }
+
+                btn.disabled = false;
+                lbl.textContent = "Ingresar";
+                ldr.classList.add('hidden');
+                mostrarErr(data.msg || "Credenciales incorrectas");
+            } catch (err) {
+                btn.disabled = false;
+                lbl.textContent = "Ingresar";
+                ldr.classList.add('hidden');
+                mostrarErr("Error de conexión: " + err.message);
+            }
+        }
+
+        document.getElementById("inp-pass").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+        document.getElementById("inp-user").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
+    </script>
+</body>
+</html>
