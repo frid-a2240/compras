@@ -24,7 +24,11 @@ async def strip_compras_prefix(request: Request, call_next):
         new_path = request.scope["path"][len("/compras"):] or "/"
         request.scope["path"] = new_path
         request.scope["raw_path"] = new_path.encode()
-    return await call_next(request)
+    response = await call_next(request)
+    location = response.headers.get("location")
+    if location and location.startswith("/") and not location.startswith("/compras"):
+        response.headers["location"] = "/compras" + location
+    return response
 
 UPLOAD_DIR = "uploads"
 HISTORIAL_DIR = "historial"
