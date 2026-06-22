@@ -765,7 +765,7 @@ async function restoreData() {
     document.getElementById('zone-oc').classList.add('loaded');
     // Pide los datos y pobla todo
     document.getElementById('loading-bar').classList.add('active');
-    const res = await fetch('/data');
+    const res = await fetch('/compras/data');
     if (!res.ok) { document.getElementById('loading-bar').classList.remove('active'); return; }
     const json = await res.json();
     allData = json.rows;
