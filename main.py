@@ -16,7 +16,7 @@ from database import get_cursor
 
 BASE_DIR = Path(__file__).parent
 
-app = FastAPI(root_path="/compras")
+app = FastAPI()
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 @app.get("/debug")
 def debug(request: Request):
