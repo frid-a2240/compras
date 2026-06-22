@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from pathlib import Path
 import pandas as pd
 import os
 import re
@@ -13,10 +14,11 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from database import get_cursor
 
+BASE_DIR = Path(__file__).parent
 
 app = FastAPI(root_path="/compras")
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 @app.middleware("http")
 async def strip_compras_prefix(request: Request, call_next):
@@ -30,8 +32,8 @@ async def strip_compras_prefix(request: Request, call_next):
         response.headers["location"] = "/compras" + location
     return response
 
-UPLOAD_DIR = "uploads"
-HISTORIAL_DIR = "historial"
+UPLOAD_DIR = BASE_DIR / "uploads"
+HISTORIAL_DIR = BASE_DIR / "historial"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(HISTORIAL_DIR, exist_ok=True)
 
@@ -103,12 +105,6 @@ def _evaluar_celda(s):
     return "OTRO"
 
 
-# ── Clasificación de Estado Pago ─────────────────────────────
-#   Regla: considera AMBAS columnas (OBSERVACIONES y PAGOS).
-#   Si alguna dice "PAGADO" (con o sin porcentaje) → PAGADO
-#   Las dos vacías → NO PAGADO
-#   Cualquier otra cosa (folios, texto libre, fechas) → OTRO
-#   El valor original de cada columna se conserva intacto para visualización.
 def clasificar_pago(observaciones, pagos=None):
     obs = _norm_celda(observaciones)
     pag = _norm_celda(pagos)
@@ -167,7 +163,7 @@ def fmt_fecha_str(valor):
     except (TypeError, ValueError):
         pass
     try:
-        dt = pd.to_datetime(valor, errors="coerce", dayfirst=True)   # ← dayfirst=True
+        dt = pd.to_datetime(valor, errors="coerce", dayfirst=True)   
         if pd.isna(dt):
             dt = pd.to_datetime(valor, errors="coerce", dayfirst=False)
         if pd.isna(dt):
