@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistema de Compras - ISP</title>
-<link rel="icon" type="image/png" href="/static/compras.jpg">
+<link rel="icon" type="image/png" href="/compras/static/compras.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -262,7 +262,7 @@ tbody tr:hover td { background: rgba(0,168,160,0.03); }
 <body>
 <header>
   <div class="logo">
-    <img src="/static/isp.jpg" alt="ISP">
+    <img src="/compras/static/isp.jpg" alt="ISP">
     <div class="logo-divider"></div>
     <div class="logo-text">
       <h1>Sistema de Compras</h1>
@@ -274,7 +274,7 @@ tbody tr:hover td { background: rgba(0,168,160,0.03); }
       <span class="status-dot" id="status-dot"></span>
       <span id="status-label">Sin archivos cargados</span>
     </div>
-    <a href="/logout" class="logout-btn" onclick="sessionStorage.removeItem('compras_active')"></a>
+    <a href="/compras/logout" class="logout-btn" onclick="sessionStorage.removeItem('compras_active')"></a>
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -448,11 +448,11 @@ async function processFiles() {
   pw.classList.add('show'); pf.style.width = '20%'; pl.textContent = 'Subiendo archivos...';
   const form = new FormData(); form.append('req_file', reqFile); form.append('oc_file', ocFile);
   try {
-    const up = await fetch('/upload', { method: 'POST', body: form });
+    const up = await fetch('/compras/upload', { method: 'POST', body: form });
     if (!up.ok) throw new Error('Error al subir archivos');
     pf.style.width = '50%'; pl.textContent = 'Cruzando datos...'; btn.textContent = 'Procesando...';
     document.getElementById('loading-bar').classList.add('active');
-    const res = await fetch('/data'); pf.style.width = '90%';
+    const res = await fetch('/compras/data'); pf.style.width = '90%';
     if (!res.ok) throw new Error('Error al procesar datos');
     const json = await res.json();
     pf.style.width = '100%'; pl.textContent = 'Listo';
@@ -707,7 +707,7 @@ function populateAnioFilter() {
 async function exportExcel() {
   showToast('Generando archivo...', 'info');
   try {
-    const res = await fetch('/export');
+    const res = await fetch('/compras/export');
     if (!res.ok) throw new Error('Error al exportar');
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
@@ -721,7 +721,7 @@ async function exportExcel() {
 }
 
 async function loadHistorial() {
-  const res = await fetch('/historial');
+  const res = await fetch('/compras/historial');
   const data = await res.json();
   const el = document.getElementById('historial-list');
   if (!data.length) { el.innerHTML = '<div class="empty-hist">Sin exportaciones previas</div>'; return; }
@@ -738,7 +738,7 @@ async function loadHistorial() {
 
 function descargarHistorial(archivo) {
   const a = document.createElement('a');
-  a.href = '/historial/descargar/' + encodeURIComponent(archivo);
+  a.href = '/compras/historial/descargar/' + encodeURIComponent(archivo);
   a.download = archivo; a.click();
   showToast('Descargando ' + archivo, 'info');
 }
@@ -754,7 +754,7 @@ async function restoreData() {
   // Al cargar la página, verifica si hay archivos previamente cargados en el servidor.
   // Si sí, repuebla la tabla sin pedir al usuario subir los archivos otra vez.
   try {
-    const fl = await fetch('/files-loaded');
+    const fl = await fetch('/compras/files-loaded');
     if (!fl.ok) return;
     const status = await fl.json();
     if (!status.ready) return;

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Compras ISP</title>
-    <link rel="icon" type="image/png" href="/static/isp.jpg">
+    <link rel="icon" type="image/png" href="/compras/static/isp.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script>
@@ -19,7 +19,7 @@
     <div class="min-h-screen flex">
 
         <div class="hidden lg:flex lg:w-1/2 relative bg-brand-900 overflow-hidden">
-            <img src="/static/compras2.jpg" alt=""
+            <img src="/compras/static/compras2.jpg" alt=""
                  class="absolute inset-0 w-full h-full object-cover"
                  onerror="this.style.display='none'">
             <div class="relative z-10 flex flex-col justify-between p-12 text-white w-full">
@@ -33,12 +33,12 @@
             <div class="w-full max-w-xl">
 
                 <div class="lg:hidden flex items-center justify-center mb-6">
-                    <img src="/static/isp.jpg" class="w-14 h-14 object-contain" alt="ISP">
+                    <img src="/compras/static/isp.jpg" class="w-14 h-14 object-contain" alt="ISP">
                 </div>
 
                 <div id="step-login">
                     <div class="mb-10 border-b pb-6 text-center">
-                        <img src="/static/isp.jpg" class="w-16 mb-3 mx-auto">
+                        <img src="/compras/static/isp.jpg" class="w-16 mb-3 mx-auto">
                         <div class="text-sm font-bold text-[#2D3D52]">Infraestructura y Servicios Portuarios</div>
                         <div class="text-3xl font-semibold text-[#1f8c95] whitespace-nowrap">Sistema de Compras</div>
                     </div>
@@ -132,7 +132,7 @@
             ldr.classList.remove('hidden');
 
             try {
-                const res = await fetch('/auth', {
+                const res = await fetch('/compras/auth', {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ user, pass }),
@@ -141,7 +141,7 @@
 
                 if (data.ok) {
                     mostrarOk("¡Bienvenida, " + data.name + "! Redirigiendo...");
-                    setTimeout(() => window.location.href = "/", 1000);
+                    setTimeout(() => window.location.href = "/compras/", 1000);
                     return;
                 }
 

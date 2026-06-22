@@ -1,3 +1,4 @@
+from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -12,9 +13,18 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from database import get_cursor
 
-app = FastAPI(title="Sistema de Compras")
+
+app = FastAPI(root_path="/compras")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+@app.middleware("http")
+async def strip_compras_prefix(request: Request, call_next):
+    if request.scope["path"].startswith("/compras"):
+        new_path = request.scope["path"][len("/compras"):] or "/"
+        request.scope["path"] = new_path
+        request.scope["raw_path"] = new_path.encode()
+    return await call_next(request)
 
 UPLOAD_DIR = "uploads"
 HISTORIAL_DIR = "historial"
