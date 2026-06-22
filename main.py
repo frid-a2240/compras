@@ -18,6 +18,18 @@ BASE_DIR = Path(__file__).parent
 
 app = FastAPI(root_path="/compras")
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+@app.get("/debug")
+def debug(request: Request):
+    static_dir = BASE_DIR / "static"
+    return {
+        "scope_path": request.scope["path"],
+        "scope_root_path": request.scope.get("root_path", ""),
+        "BASE_DIR": str(BASE_DIR),
+        "static_dir": str(static_dir),
+        "static_exists": static_dir.exists(),
+        "files_in_static": [f.name for f in static_dir.iterdir()] if static_dir.exists() else [],
+        "cwd": os.getcwd(),
+    }
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 @app.middleware("http")
@@ -140,9 +152,9 @@ def extraer_anio(valor):
     except (TypeError, ValueError):
         pass
     try:
-        dt = pd.to_datetime(valor, errors="coerce", dayfirst=True)   # ← dayfirst=True
+        dt = pd.to_datetime(valor, errors="coerce", dayfirst=True)   
         if pd.isna(dt):
-            dt = pd.to_datetime(valor, errors="coerce", dayfirst=False)  # fallback ISO
+            dt = pd.to_datetime(valor, errors="coerce", dayfirst=False)  
         if pd.isna(dt):
             return ""
         anio = dt.year
