@@ -63,9 +63,17 @@ def verificar_sesion(token: str) -> dict | None:
         return None
 
 # ── Usuarios ──────────────────────────────────────────────────
+# Nota de seguridad: este proyecto no tiene tabla de usuarios en BD ni
+# hashing de contraseñas — se comparan en texto plano contra este dict
+# (ver /auth más abajo). Para no romper esa convención pero evitar subir
+# una contraseña real al repositorio, la cuenta de solo-consulta/visita
+# toma su contraseña de la variable de entorno VISITA_PASSWORD (definida
+# en el .env del servidor, igual que DB_PASSWORD). Si no está definida,
+# el login de esa cuenta simplemente falla (fail-closed).
 USERS = {
     "203773": {"pass": "compras2026", "name": "Yudith Sayuri"},
     "204869": {"pass": "isp2026",     "name": "Johanna Terezhina"},
+    "202326": {"pass": os.getenv("VISITA_PASSWORD", ""), "name": "Consulta / Visita"},
 }
 
 # ── Normalización de estatus ──────────────────────────────────
